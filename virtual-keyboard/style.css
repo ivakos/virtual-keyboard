@@ -1,0 +1,126 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+:root {
+  --main-color: #F4EBDB;
+  --second-color: #8E9B97;
+  --hover-color: #537072;
+  --text-color: #2C4A52;
+}
+
+body {
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  width: 990px;
+  margin: 0 auto;
+  gap: 20px;
+}
+
+.textAreaField {
+  display: flex;
+  border-radius: 5px;
+
+  max-width: 100%;
+  min-width: 100%;
+
+  height: 100px;
+  max-height: 300px;
+
+  background-color: var(--main-color);
+  color: var(--text-color);
+
+  font-size: 1.3rem;
+}
+
+.keyboard {
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  gap: 10px;
+  overflow-x: hidden;
+}
+
+.description{
+  text-align: center;
+  color: var(--text-color);
+
+  font-size: 0.8rem;
+}
+
+.row {
+  display: flex;
+  width: 100%;
+  gap: 15px;
+}
+
+.key {
+  width: 50px;
+  height: 50px;
+  background-color: var(--main-color);
+  border-radius: 3px;
+  color: var(--text-color);
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  transition: all 0.1s;
+}
+
+.key:hover {
+  transform: scale(105%);
+  transition: all 0.1s;
+}
+
+.key:active {
+  background-color: var(--hover-color);
+  transition: all 0.1s;
+}
+
+.key-special {
+  background-color: var(--second-color);
+}
+
+.backspace {
+  width: 125px;
+}
+
+.tab {
+  width: 55px;
+}
+
+.delete {
+  width: 55px;
+}
+
+.caps-lock {
+  width: 120px;
+}
+
+.enter {
+  width: 120px;
+}
+
+.shift {
+  width: 125px;
+}
+
+.ctrl {
+  width: 85px;
+}
+
+.space {
+  width: 380px;
+}
