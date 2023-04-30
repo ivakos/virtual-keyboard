@@ -120,7 +120,7 @@ body.dark {
   gap: 15px;
 }
 
-.key-wrapper{
+.key-wrapper {
   padding: 3px;
   width: 50px;
   height: 50px;
@@ -135,7 +135,7 @@ body.dark {
 
 .key {
   color: inherit;
-  font-size: 1.2rem;
+  font-size: 1.6rem;
 }
 
 
@@ -147,7 +147,6 @@ body.dark {
 
 
 .key-wrapper:hover {
-  opacity: 0.7;
   cursor: pointer;
   transform: scale(95%);
   transition: all 0.1s;
@@ -162,6 +161,7 @@ body.dark {
 .key.dark {
   background: linear-gradient(90deg, pink, red, orange);
   background-size: 500% 500%;
+  background-clip: text;
   -webkit-animation: AnimationName 5s cubic-bezier(0, 0, 1, 1) infinite;
   -moz-animation: AnimationName 5s cubic-bezier(0, 0, 1, 1) infinite;
   animation: AnimationName 5s cubic-bezier(0, 0, 1, 1) infinite;
