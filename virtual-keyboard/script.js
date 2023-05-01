@@ -112,10 +112,9 @@ switchTheme.addEventListener('click', () => {
 })
 // -----------------------------END SWITCH THEME
 
-const functionalKeys = [16, 20];
+const functionalKeys = [9, 8, 46, 13, 17, 91, 16, 20, 18];
 
 addEventListener("keydown", (event) => {
-
   document.getElementById(event.keyCode).parentNode.classList.add("click");
 
   if (document.activeElement.classList[0] !== "textAreaField" && !functionalKeys.includes(event.keyCode)) {
@@ -128,29 +127,30 @@ addEventListener("keydown", (event) => {
     for (let i = 0; i < layout.length; i++) {
       for (let k = 0; k < layout[i].length; k++) {
         const letter = layout[i][k];
-        currentLocal === "en"
-          ? domLayout[i][k].firstElementChild.innerHTML = letter.enSymbol
-          : domLayout[i][k].firstElementChild.innerHTML = letter.ruSymbol;
+        if (currentLocal === "en") domLayout[i][k].firstElementChild.innerHTML = letter.enSymbol;
+        if (currentLocal === "ru") domLayout[i][k].firstElementChild.innerHTML = letter.ruSymbol;
+        if (currentLocal === "enSymbol") domLayout[i][k].firstElementChild.innerHTML = letter.en;
+        if (currentLocal === "ruSymbol") domLayout[i][k].firstElementChild.innerHTML = letter.ru;
       }
     }
   }
 
-
-//SWITCH LANGUAGE
-  // if (event.keyCode === 18 && event.shiftKey === true) {
-  //   currentLocal = currentLocal === "en" ? "ru" : "en";
-  //   for (let i = 0; i < layout.length; i++) {
-  //     for (let k = 0; k < layout[i].length; k++) {
-  //       const letter = layout[i][k];
-  //       domLayout[i][k].firstElementChild.innerHTML = letter.ru;
-  //     }
-  //   }
-  // }
+  //CAPS LOCK
+  if (event.keyCode === 20) {
+    for (let i = 0; i < layout.length; i++) {
+      for (let k = 0; k < layout[i].length; k++) {
+        const letter = layout[i][k];
+        if (currentLocal === "en") domLayout[i][k].firstElementChild.innerHTML = letter.enSymbol;
+        if (currentLocal === "ru") domLayout[i][k].firstElementChild.innerHTML = letter.ruSymbol;
+        if (currentLocal === "enSymbol") domLayout[i][k].firstElementChild.innerHTML = letter.en;
+        if (currentLocal === "ruSymbol") domLayout[i][k].firstElementChild.innerHTML = letter.ru;
+      }
+    }
+  }
 
 });
 
 addEventListener("keyup", (event) => {
-
   setTimeout(() => {
     document.getElementById(event.keyCode).parentNode.classList.remove("click");
   }, 100)
@@ -160,16 +160,88 @@ addEventListener("keyup", (event) => {
     for (let i = 0; i < layout.length; i++) {
       for (let k = 0; k < layout[i].length; k++) {
         const letter = layout[i][k];
-        currentLocal === "en"
-          ? domLayout[i][k].firstElementChild.innerHTML = letter.en
-          : domLayout[i][k].firstElementChild.innerHTML = letter.ru;
+        switch (currentLocal) {
+          case 'en':
+            currentLocal = 'en';
+            break;
+          case 'ru':
+            currentLocal = 'ru';
+            break;
+          case 'enSymbol':
+            currentLocal = 'enSymbol';
+            break;
+          case 'ruSymbol':
+            currentLocal = 'ruSymbol';
+            break;
+        }
+        domLayout[i][k].firstElementChild.innerHTML = letter[currentLocal];
       }
     }
   }
 
-//SWITCH LANGUAGE
+  //SWITCH LANGUAGE
   if (event.keyCode === 18 && event.shiftKey === true) {
-    currentLocal = currentLocal === "en" ? "ru" : "en";
+    switch (currentLocal) {
+      case 'en':
+        currentLocal = 'ru';
+        break;
+      case 'ru':
+        currentLocal = 'en';
+        break;
+      case 'enSymbol':
+        currentLocal = 'ruSymbol';
+        break;
+      case 'ruSymbol':
+        currentLocal = 'enSymbol';
+        break;
+    }
+    for (let i = 0; i < layout.length; i++) {
+      for (let k = 0; k < layout[i].length; k++) {
+        const letter = layout[i][k];
+        domLayout[i][k].firstElementChild.innerHTML = letter[currentLocal];
+      }
+    }
+  }
+
+  if (event.keyCode === 16 && event.altKey === true) {
+    switch (currentLocal) {
+      case 'en':
+        currentLocal = 'ru';
+        break;
+      case 'ru':
+        currentLocal = 'en';
+        break;
+      case 'enSymbol':
+        currentLocal = 'ruSymbol';
+        break;
+      case 'ruSymbol':
+        currentLocal = 'enSymbol';
+        break;
+    }
+    for (let i = 0; i < layout.length; i++) {
+      for (let k = 0; k < layout[i].length; k++) {
+        const letter = layout[i][k];
+        domLayout[i][k].firstElementChild.innerHTML = letter[currentLocal];
+      }
+    }
+  }
+
+  //CAPS LOCK
+  if (event.keyCode === 20) {
+    switch (currentLocal) {
+      case 'en':
+        currentLocal = 'enSymbol';
+        break;
+      case 'ru':
+        currentLocal = 'ruSymbol';
+        break;
+      case 'enSymbol':
+        currentLocal = 'en';
+        break;
+      case 'ruSymbol':
+        currentLocal = 'ru';
+        break;
+    }
     for (let i = 0; i < layout.length; i++) {
       for (let k = 0; k < layout[i].length; k++) {
         const letter = layout[i][k];
