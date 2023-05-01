@@ -1,5 +1,6 @@
 let currentLocal = "en";
 let domLayout = [];
+
 const layout = [
   [createKey(192, '`', '~', 'ё', 'Ё'), createKey(49, 1, '!', 1, '!'), createKey(50, 2, '@', 2, '@'), createKey(51, 3, '#', 3, '#'), createKey(52, 4, '$', 4, '$'), createKey(53, 5, '%', 5, '%'), createKey(54, 6, '^', 6, '^'), createKey(55, 7, '&', 7, '&'), createKey(56, 8, '*', 8, '*'), createKey(57, 9, '(', 9, '('), createKey(48, 0, ')', 0, ')'), createKey(189, '-', '_', '-', '_'), createKey(187, '=', '+', '=', '+'), createKey(8, 'Backspace', 'Backspace', 'Backspace', 'Backspace')],
   [createKey(9, 'Tab', 'Tab', 'Tab', 'Tab'), createKey(81, 'q', 'Q', 'й', 'Й'), createKey(87, 'w', 'W', 'ц', 'Ц'), createKey(69, 'e', 'E', 'у', 'У'), createKey(82, 'r', 'R', 'к', 'К'), createKey(84, 't', 'T', 'е', 'Е'), createKey(89, 'y', 'Y', 'н', 'Н'), createKey(85, 'u', 'U', 'г', 'Г'), createKey(73, 'i', 'I', 'ш', 'Ш'), createKey(79, 'o', 'O', 'щ', 'Щ'), createKey(80, 'p', 'P', 'з', 'З'), createKey(219, '[', '{', 'х', 'Х'), createKey(221, ']', '}', 'ъ', 'Ъ'), createKey(220, '\\', '|', '\\', '/'), createKey(46, 'del', 'del', 'del', 'del')],
@@ -50,13 +51,17 @@ for (let i = 0; i < layout.length; i++) {
     key.id = letter.code;
 
     keyWrapper.onclick = (event) => {
-      const textArea = document.getElementsByClassName("textAreaField")[0];
-      textArea.value = textArea.value + event.target.firstElementChild.innerHTML;
+      if (!functionalKeys.includes(letter.code)) {
+        const textArea = document.getElementsByClassName("textAreaField")[0];
+        textArea.value = textArea.value + event.target.firstElementChild.innerHTML;
+      }
     }
 
     key.onclick = (event) => {
-      const textArea = document.getElementsByClassName("textAreaField")[0];
-      textArea.value = textArea.value + event.target.innerHTML;
+      if (!functionalKeys.includes(letter.code)) {
+        const textArea = document.getElementsByClassName("textAreaField")[0];
+        textArea.value = textArea.value + event.target.innerHTML;
+      }
     }
 
     if ((i == 0 && (k == 0 || k == 13)) ||
@@ -107,36 +112,72 @@ switchTheme.addEventListener('click', () => {
 })
 // -----------------------------END SWITCH THEME
 
-const functionalKeys = [16];
+const functionalKeys = [16, 20];
 
 addEventListener("keydown", (event) => {
+
   document.getElementById(event.keyCode).parentNode.classList.add("click");
+
   if (document.activeElement.classList[0] !== "textAreaField" && !functionalKeys.includes(event.keyCode)) {
     const textArea = document.getElementsByClassName("textAreaField")[0];
     textArea.value = textArea.value + event.key;
   }
+
+  //SHIFT
   if (event.keyCode === 16) {
     for (let i = 0; i < layout.length; i++) {
       for (let k = 0; k < layout[i].length; k++) {
         const letter = layout[i][k];
-        domLayout[i][k].firstElementChild.innerHTML = letter.enSymbol;
+        currentLocal === "en"
+          ? domLayout[i][k].firstElementChild.innerHTML = letter.enSymbol
+          : domLayout[i][k].firstElementChild.innerHTML = letter.ruSymbol;
       }
     }
   }
+
+
+//SWITCH LANGUAGE
+  // if (event.keyCode === 18 && event.shiftKey === true) {
+  //   currentLocal = currentLocal === "en" ? "ru" : "en";
+  //   for (let i = 0; i < layout.length; i++) {
+  //     for (let k = 0; k < layout[i].length; k++) {
+  //       const letter = layout[i][k];
+  //       domLayout[i][k].firstElementChild.innerHTML = letter.ru;
+  //     }
+  //   }
+  // }
+
 });
 
 addEventListener("keyup", (event) => {
+
   setTimeout(() => {
     document.getElementById(event.keyCode).parentNode.classList.remove("click");
-    if (event.keyCode === 16) {
-      currentLocal = currentLocal.substr(0, 2);
-      for (let i = 0; i < layout.length; i++) {
-        for (let k = 0; k < layout[i].length; k++) {
-          const letter = layout[i][k];
-          domLayout[i][k].firstElementChild.innerHTML = letter.en;
-        }
+  }, 100)
+
+  //SHIFT
+  if (event.keyCode === 16) {
+    for (let i = 0; i < layout.length; i++) {
+      for (let k = 0; k < layout[i].length; k++) {
+        const letter = layout[i][k];
+        currentLocal === "en"
+          ? domLayout[i][k].firstElementChild.innerHTML = letter.en
+          : domLayout[i][k].firstElementChild.innerHTML = letter.ru;
       }
     }
-  }, 100)
+  }
+
+//SWITCH LANGUAGE
+  if (event.keyCode === 18 && event.shiftKey === true) {
+    currentLocal = currentLocal === "en" ? "ru" : "en";
+    for (let i = 0; i < layout.length; i++) {
+      for (let k = 0; k < layout[i].length; k++) {
+        const letter = layout[i][k];
+        domLayout[i][k].firstElementChild.innerHTML = letter[currentLocal];
+      }
+    }
+  }
+
 });
 
+//console.log('Caret at: ', event.target.selectionStart)
