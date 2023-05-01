@@ -136,6 +136,7 @@ body.dark {
 .key {
   color: inherit;
   font-size: 1.6rem;
+  user-select: none;
 }
 
 
