@@ -1,5 +1,6 @@
 let currentLocal = "en";
 let domLayout = [];
+let capsLock = false;
 
 const layout = [
   [createKey(192, '`', '~', 'ё', 'Ё'), createKey(49, 1, '!', 1, '!'), createKey(50, 2, '@', 2, '@'), createKey(51, 3, '#', 3, '#'), createKey(52, 4, '$', 4, '$'), createKey(53, 5, '%', 5, '%'), createKey(54, 6, '^', 6, '^'), createKey(55, 7, '&', 7, '&'), createKey(56, 8, '*', 8, '*'), createKey(57, 9, '(', 9, '('), createKey(48, 0, ')', 0, ')'), createKey(189, '-', '_', '-', '_'), createKey(187, '=', '+', '=', '+'), createKey(8, 'Backspace', 'Backspace', 'Backspace', 'Backspace')],
@@ -140,10 +141,13 @@ addEventListener("keydown", (event) => {
     for (let i = 0; i < layout.length; i++) {
       for (let k = 0; k < layout[i].length; k++) {
         const letter = layout[i][k];
-        if (currentLocal === "en") domLayout[i][k].firstElementChild.innerHTML = letter.enSymbol;
-        if (currentLocal === "ru") domLayout[i][k].firstElementChild.innerHTML = letter.ruSymbol;
-        if (currentLocal === "enSymbol") domLayout[i][k].firstElementChild.innerHTML = letter.en;
-        if (currentLocal === "ruSymbol") domLayout[i][k].firstElementChild.innerHTML = letter.ru;
+        if (!functionalKeys.includes(letter.code)) {
+          if (capsLock) {
+            domLayout[i][k].firstElementChild.innerHTML = domLayout[i][k].firstElementChild.innerHTML.toLowerCase();
+          } else {
+            domLayout[i][k].firstElementChild.innerHTML = domLayout[i][k].firstElementChild.innerHTML.toUpperCase();
+          }
+        }
       }
     }
   }
@@ -228,24 +232,17 @@ addEventListener("keyup", (event) => {
 
   //CAPS LOCK
   if (event.keyCode === 20) {
-    switch (currentLocal) {
-      case 'en':
-        currentLocal = 'enSymbol';
-        break;
-      case 'ru':
-        currentLocal = 'ruSymbol';
-        break;
-      case 'enSymbol':
-        currentLocal = 'en';
-        break;
-      case 'ruSymbol':
-        currentLocal = 'ru';
-        break;
-    }
+    capsLock = capsLock === false ? true : false;
     for (let i = 0; i < layout.length; i++) {
       for (let k = 0; k < layout[i].length; k++) {
         const letter = layout[i][k];
-        domLayout[i][k].firstElementChild.innerHTML = letter[currentLocal];
+        if (!functionalKeys.includes(letter.code)) {
+          if (capsLock) {
+            domLayout[i][k].firstElementChild.innerHTML = domLayout[i][k].firstElementChild.innerHTML.toUpperCase();
+          } else {
+            domLayout[i][k].firstElementChild.innerHTML = domLayout[i][k].firstElementChild.innerHTML.toLowerCase();
+          }
+        }
       }
     }
   }
