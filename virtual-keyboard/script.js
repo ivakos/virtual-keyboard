@@ -83,6 +83,7 @@ domLayout[4][0].classList.add('ctrl');
 domLayout[4][3].classList.add('space');
 domLayout[4][5].classList.add('ctrl');
 
+
 const description = document.createElement('div');
 description.className = "description";
 description.innerHTML = "Keyboard was created for Windows. <br>Ctrl + Alt to switch language."
@@ -285,8 +286,37 @@ keys.forEach(key => {
 
 addEventListener("keydown", (event) => {
   const key = document.getElementById(event.keyCode);
-  if (event.keyCode != 20) {
-    key.classList.add("click");
+
+  if (event.keyCode != 16) {
+    if(event.keyCode != 17){
+      if(event.keyCode != 18){
+        key.classList.add("click");
+      }
+    }
+  }
+
+  if(event.code == "ShiftLeft"){
+    domLayout[3][0].classList.add('click')
+  }
+
+  if(event.code == "ShiftRight"){
+    domLayout[3][11].classList.add('click')
+  }
+
+  if(event.code == "ControlLeft"){
+    domLayout[4][0].classList.add('click')
+  }
+
+  if(event.code == "ControlRight"){
+    domLayout[4][5].classList.add('click')
+  }
+
+  if(event.code == "AltLeft"){
+    domLayout[4][2].classList.add('click')
+  }
+
+  if(event.code == "AltRight"){
+    domLayout[4][4].classList.add('click')
   }
 
   const textArea = document.getElementsByClassName("textAreaField")[0];
@@ -396,7 +426,6 @@ addEventListener("keydown", (event) => {
   //ENTER
   if (event.keyCode === 13) {
     let array = textArea.value.split('');
-    console.log(positionCursor);
     array.splice(positionCursor, 0, '\n');
     array = array.join('');
     textArea.value = array;
@@ -404,17 +433,38 @@ addEventListener("keydown", (event) => {
     textArea.setSelectionRange(positionCursor, positionCursor);
   }
 
-
 });
 
 addEventListener("keyup", (event) => {
   setTimeout(() => {
     const key = document.getElementById(event.keyCode);
-    if (event.keyCode != 20) {
+    if (event.keyCode != 16) {
       key.classList.remove("click");
     }
-  }, 100)
+    if(event.code == "ShiftLeft"){
+      domLayout[3][0].classList.remove('click')
+    }
+  
+    if(event.code == "ShiftRight"){
+      domLayout[3][11].classList.remove('click')
+    }
 
+    if(event.code == "ControlLeft"){
+      domLayout[4][0].classList.remove('click')
+    }
+  
+    if(event.code == "ControlRight"){
+      domLayout[4][5].classList.remove('click')
+    }
+    
+    if(event.code == "AltLeft"){
+      domLayout[4][2].classList.remove('click')
+    }
+  
+    if(event.code == "AltRight"){
+      domLayout[4][4].classList.remove('click')
+    }
+  }, 100)
 
   //SHIFT
   if (event.keyCode === 16) {
