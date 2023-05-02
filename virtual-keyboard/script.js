@@ -274,10 +274,10 @@ keys.forEach(key => {
     //ENTER
     if (key === 13) {
       let array = textArea.value.split('');
-      console.log(positionCursor);
       array.splice(positionCursor, 0, '\n');
       array = array.join('');
       textArea.value = array;
+      positionCursor++;
       textArea.setSelectionRange(positionCursor, positionCursor);
     }
 
@@ -402,6 +402,7 @@ addEventListener("keydown", (event) => {
     array.splice(positionCursor, 0, '\n');
     array = array.join('');
     textArea.value = array;
+    positionCursor++;
     textArea.setSelectionRange(positionCursor, positionCursor);
   }
 
