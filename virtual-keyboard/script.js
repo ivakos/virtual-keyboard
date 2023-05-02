@@ -4,6 +4,7 @@ let currentLocal = localStorage.getItem('currentLocal') ?
 
 let domLayout = [];
 let capsLock = false;
+let shiftPress = false;
 
 const functionalKeys = [9, 8, 46, 13, 17, 91, 16, 20, 18];
 
@@ -47,11 +48,7 @@ for (let i = 0; i < layout.length; i++) {
   keyboard.append(row);
 
   for (let k = 0; k < layout[i].length; k++) {
-    const keyWrapper = document.createElement('div');
-    keyWrapper.className = "key-wrapper";
-    row.append(keyWrapper);
-
-    const key = document.createElement('p');
+    const key = document.createElement('div');
     const letter = layout[i][k];
     key.className = "key";
     key.innerHTML = letter[currentLocal];
@@ -62,10 +59,10 @@ for (let i = 0; i < layout.length; i++) {
       (i == 2 && (k == 0 || k == 12)) ||
       (i == 3 && (k == 0 || k == 11 || k == 12)) ||
       (i == 4 && (k != 3))) {
-      keyWrapper.classList.add('key-special');
+      key.classList.add('key-special');
     }
-    keyWrapper.append(key);
-    domLayout[i][k] = keyWrapper;
+    row.append(key);
+    domLayout[i][k] = key;
   }
 }
 
@@ -94,42 +91,133 @@ const switchTheme = document.createElement('div');
 switchTheme.className = "switch-theme";
 wrapper.append(switchTheme);
 
-const keysWrapper = document.querySelectorAll('.key-wrapper');
+
 const keys = document.querySelectorAll('.key');
 
 const lightTheme = [body, textAreaField, keyboard, description];
 switchTheme.addEventListener('click', () => {
   switchTheme.classList.toggle('active')
   lightTheme.forEach((element) => element.classList.toggle('dark'));
-  keys.forEach((element) => element.classList.toggle('dark'));
 })
 // -----------------------------END SWITCH THEME
 
 const textArea = document.getElementsByClassName("textAreaField")[0];
 
-// keys.forEach(key => {
-//   key.addEventListener('click', event => {
-//     console.log(event);
-//     const key = document.getElementById(event.firstElementChild);
-//     console.log(key);
-//     if (document.activeElement.classList[0] !== "textAreaField" && !functionalKeys.includes(event.keyCode)) {
-//       console.log(event);
-//       textArea.value = textArea.value + event.target.innerHTML;
-//     }
-//   textArea.focus();
-//   })
-// });
+textArea.addEventListener('keydown', (event) => {
+  event.preventDefault();
+})
+
+keys.forEach(key => {
+  key.addEventListener('click', (event) => {
+    const key = +event.target.id;
+    textArea.focus();
+
+    if (!functionalKeys.includes(key)) {
+      textArea.value = textArea.value + event.target.innerHTML;
+    }
+
+    if (key === 16) {
+      if (!shiftPress) { event.target.classList.add("click"); }
+      else { event.target.classList.remove("click"); }
+
+      let localLang;
+      for (let i = 0; i < layout.length; i++) {
+        for (let k = 0; k < layout[i].length; k++) {
+          const letter = layout[i][k];
+        
+          if (!capsLock) {
+            switch(currentLocal) {
+              case 'en':
+                localLang = 'enSymbol';
+              break;
+            
+              case 'enSymbol':  
+              localLang = 'en';
+              break;
+
+              case 'ru':
+                localLang = 'ruSymbol';
+              break;
+            
+              case 'ruSymbol':  
+              localLang = 'ru';
+              break;
+            } 
+            domLayout[i][k].innerHTML = letter[localLang];
+            
+           
+          } else {
+            if (currentLocal === "en") {
+              if (letter.enSymbol.toLowerCase() != letter.en) {
+                domLayout[i][k].innerHTML = letter.enSymbol;
+              } else {
+                domLayout[i][k].innerHTML = letter.en;
+              }
+            }
+
+            if (currentLocal === "ru") {
+              if (letter.ruSymbol.toLowerCase() != letter.ru) {
+                domLayout[i][k].innerHTML = letter.ruSymbol;
+              } else {
+                domLayout[i][k].innerHTML = letter.ru;
+              }
+            }
+
+            if (currentLocal === "enSymbol") {
+              if (letter.ruSymbol.toLowerCase() != letter.ru) {
+                domLayout[i][k].innerHTML = letter.enSymbol;
+              } else {
+                domLayout[i][k].innerHTML = letter.enSymbol;
+              }
+            }
+
+            if (currentLocal === "ruSymbol") {
+              if (letter.ruSymbol.toLowerCase() != letter.ru) {
+                domLayout[i][k].innerHTML = letter.ru;
+              } else {
+                domLayout[i][k].innerHTML = letter.ruSymbol;
+              }
+            }
+          }
+        }
+        shiftPress = !shiftPress;
+      }
+
+      switch(currentLocal) {
+        case 'en':
+          currentLocal = 'enSymbol';
+        break;
+      
+        case 'enSymbol':  
+        currentLocal = 'en';
+        break;
+
+        case 'ru':
+          currentLocal = 'ruSymbol';
+        break;
+      
+        case 'ruSymbol':  
+        currentLocal = 'ru';
+        break;
+      } 
+    }
+
+
+  });
+});
 
 
 addEventListener("keydown", (event) => {
   const key = document.getElementById(event.keyCode);
   if (event.keyCode != 20) {
-    key.parentNode.classList.add("click");
+    key.classList.add("click");
   }
 
   const textArea = document.getElementsByClassName("textAreaField")[0];
   textArea.focus();
-  if (document.activeElement.classList[0] !== "textAreaField" && !functionalKeys.includes(event.keyCode)) {
+
+
+  if (!functionalKeys.includes(event.keyCode)) {
     textArea.value = textArea.value + key.innerHTML;
   }
 
@@ -140,27 +228,26 @@ addEventListener("keydown", (event) => {
         const letter = layout[i][k];
         if (!capsLock) {
 
-          if (currentLocal === "en") { domLayout[i][k].firstElementChild.innerHTML = letter.enSymbol; }
-          if (currentLocal === "ru") { domLayout[i][k].firstElementChild.innerHTML = letter.ruSymbol; }
+          if (currentLocal === "en") { domLayout[i][k].innerHTML = letter.enSymbol; }
+          if (currentLocal === "ru") { domLayout[i][k].innerHTML = letter.ruSymbol; }
 
         } else {
 
           if (currentLocal === "en") {
             if (letter.enSymbol.toLowerCase() != letter.en) {
-              domLayout[i][k].firstElementChild.innerHTML = letter.enSymbol;
+              domLayout[i][k].innerHTML = letter.enSymbol;
             } else {
-              domLayout[i][k].firstElementChild.innerHTML = letter.en;
+              domLayout[i][k].innerHTML = letter.en;
             }
           }
 
           if (currentLocal === "ru") {
             if (letter.ruSymbol.toLowerCase() != letter.ru) {
-              domLayout[i][k].firstElementChild.innerHTML = letter.ruSymbol;
+              domLayout[i][k].innerHTML = letter.ruSymbol;
             } else {
-              domLayout[i][k].firstElementChild.innerHTML = letter.ru;
+              domLayout[i][k].innerHTML = letter.ru;
             }
           }
-
         }
       }
     }
@@ -169,8 +256,8 @@ addEventListener("keydown", (event) => {
   //CAPS LOCK
   if (event.keyCode === 20) {
 
-    if (!capsLock) { key.parentNode.classList.add("click"); }
-    else { key.parentNode.classList.remove("click"); }
+    if (!capsLock) { key.classList.add("click"); }
+    else { key.classList.remove("click"); }
 
     let localCapsLock = !capsLock;
     for (let i = 0; i < layout.length; i++) {
@@ -178,10 +265,9 @@ addEventListener("keydown", (event) => {
         const letter = layout[i][k];
         if (!functionalKeys.includes(letter.code)) {
           if (!localCapsLock) {
-            domLayout[i][k].firstElementChild.innerHTML = domLayout[i][k].firstElementChild.innerHTML.toLowerCase();
+            domLayout[i][k].innerHTML = domLayout[i][k].innerHTML.toLowerCase();
           } else {
-
-            domLayout[i][k].firstElementChild.innerHTML = domLayout[i][k].firstElementChild.innerHTML.toUpperCase();
+            domLayout[i][k].innerHTML = domLayout[i][k].innerHTML.toUpperCase();
           }
         }
       }
@@ -227,7 +313,7 @@ addEventListener("keyup", (event) => {
   setTimeout(() => {
     const key = document.getElementById(event.keyCode);
     if (event.keyCode != 20) {
-      key.parentNode.classList.remove("click");
+      key.classList.remove("click");
     }
   }, 100)
 
@@ -238,62 +324,59 @@ addEventListener("keyup", (event) => {
       for (let k = 0; k < layout[i].length; k++) {
         const letter = layout[i][k];
         if (!capsLock) {
-          if (currentLocal === "en") { domLayout[i][k].firstElementChild.innerHTML = letter.en; }
-          if (currentLocal === "ru") { domLayout[i][k].firstElementChild.innerHTML = letter.ru; }
+          if (currentLocal === "en") { domLayout[i][k].innerHTML = letter.en; }
+          if (currentLocal === "ru") { domLayout[i][k].innerHTML = letter.ru; }
         } else {
 
           if (currentLocal === "en") {
             if (letter.enSymbol.toLowerCase() != letter.en) {
-              domLayout[i][k].firstElementChild.innerHTML = letter.en;
+              domLayout[i][k].innerHTML = letter.en;
             } else {
-              domLayout[i][k].firstElementChild.innerHTML = letter.enSymbol;
+              domLayout[i][k].innerHTML = letter.enSymbol;
             }
           }
 
           if (currentLocal === "ru") {
             if (letter.ruSymbol.toLowerCase() != letter.ru) {
-              domLayout[i][k].firstElementChild.innerHTML = letter.ru;
+              domLayout[i][k].innerHTML = letter.ru;
             } else {
-              domLayout[i][k].firstElementChild.innerHTML = letter.ruSymbol;
+              domLayout[i][k].innerHTML = letter.ruSymbol;
             }
           }
-
         }
       }
     }
   }
 
-
-
   //SWITCH LANGUAGE
   if (event.keyCode === 18 && event.ctrlKey === true) {
-    currentLocal = currentLocal === 'en'? 'ru': 'en';
+    currentLocal = currentLocal === 'en' ? 'ru' : 'en';
     for (let i = 0; i < layout.length; i++) {
       for (let k = 0; k < layout[i].length; k++) {
         const letter = layout[i][k];
 
         if (!capsLock) {
           if (currentLocal === "en") {
-            domLayout[i][k].firstElementChild.innerHTML = letter.en;
+            domLayout[i][k].innerHTML = letter.en;
           }
 
           if (currentLocal === "ru") {
-            domLayout[i][k].firstElementChild.innerHTML = letter.ru;
+            domLayout[i][k].innerHTML = letter.ru;
           }
         } else {
           if (currentLocal === "en") {
             if (letter.enSymbol.toLowerCase() != letter.en) {
-              domLayout[i][k].firstElementChild.innerHTML = letter.en;
+              domLayout[i][k].innerHTML = letter.en;
             } else {
-              domLayout[i][k].firstElementChild.innerHTML = letter.enSymbol;
+              domLayout[i][k].innerHTML = letter.enSymbol;
             }
           }
 
           if (currentLocal === "ru") {
             if (letter.ruSymbol.toLowerCase() != letter.ru) {
-              domLayout[i][k].firstElementChild.innerHTML = letter.ru;
+              domLayout[i][k].innerHTML = letter.ru;
             } else {
-              domLayout[i][k].firstElementChild.innerHTML = letter.ruSymbol;
+              domLayout[i][k].innerHTML = letter.ruSymbol;
             }
           }
         }
@@ -303,34 +386,34 @@ addEventListener("keyup", (event) => {
   }
 
   if (event.keyCode === 17 && event.altKey === true) {
-    currentLocal = currentLocal === 'en'? 'ru': 'en';
+    currentLocal = currentLocal === 'en' ? 'ru' : 'en';
     for (let i = 0; i < layout.length; i++) {
       for (let k = 0; k < layout[i].length; k++) {
         const letter = layout[i][k];
         if (!capsLock) {
           if (currentLocal === "en") {
-            domLayout[i][k].firstElementChild.innerHTML = letter.en;
+            domLayout[i][k].innerHTML = letter.en;
           }
 
           if (currentLocal === "ru") {
-            domLayout[i][k].firstElementChild.innerHTML = letter.ru;
+            domLayout[i][k].innerHTML = letter.ru;
           }
 
         } else {
 
           if (currentLocal === "en") {
             if (letter.enSymbol.toLowerCase() != letter.en) {
-              domLayout[i][k].firstElementChild.innerHTML = letter.en;
+              domLayout[i][k].innerHTML = letter.en;
             } else {
-              domLayout[i][k].firstElementChild.innerHTML = letter.enSymbol;
+              domLayout[i][k].innerHTML = letter.enSymbol;
             }
           }
 
           if (currentLocal === "ru") {
             if (letter.ruSymbol.toLowerCase() != letter.ru) {
-              domLayout[i][k].firstElementChild.innerHTML = letter.ru;
+              domLayout[i][k].innerHTML = letter.ru;
             } else {
-              domLayout[i][k].firstElementChild.innerHTML = letter.ruSymbol;
+              domLayout[i][k].innerHTML = letter.ruSymbol;
             }
           }
         }
@@ -347,9 +430,9 @@ addEventListener("keyup", (event) => {
         const letter = layout[i][k];
         if (!functionalKeys.includes(letter.code)) {
           if (capsLock) {
-            domLayout[i][k].firstElementChild.innerHTML = domLayout[i][k].firstElementChild.innerHTML.toUpperCase();
+            domLayout[i][k].innerHTML = domLayout[i][k].innerHTML.toUpperCase();
           } else {
-            domLayout[i][k].firstElementChild.innerHTML = domLayout[i][k].firstElementChild.innerHTML.toLowerCase();
+            domLayout[i][k].innerHTML = domLayout[i][k].innerHTML.toLowerCase();
           }
         }
       }
