@@ -116,6 +116,7 @@ keys.forEach(key => {
       textArea.value = textArea.value + event.target.innerHTML;
     }
 
+    //SHIFT
     if (key === 16) {
       if (!shiftPress) { event.target.classList.add("click"); }
       else { event.target.classList.remove("click"); }
@@ -124,28 +125,28 @@ keys.forEach(key => {
       for (let i = 0; i < layout.length; i++) {
         for (let k = 0; k < layout[i].length; k++) {
           const letter = layout[i][k];
-        
+
           if (!capsLock) {
-            switch(currentLocal) {
+            switch (currentLocal) {
               case 'en':
                 localLang = 'enSymbol';
-              break;
-            
-              case 'enSymbol':  
-              localLang = 'en';
-              break;
+                break;
+
+              case 'enSymbol':
+                localLang = 'en';
+                break;
 
               case 'ru':
                 localLang = 'ruSymbol';
-              break;
-            
-              case 'ruSymbol':  
-              localLang = 'ru';
-              break;
-            } 
+                break;
+
+              case 'ruSymbol':
+                localLang = 'ru';
+                break;
+            }
             domLayout[i][k].innerHTML = letter[localLang];
-            
-           
+
+
           } else {
             if (currentLocal === "en") {
               if (letter.enSymbol.toLowerCase() != letter.en) {
@@ -183,24 +184,47 @@ keys.forEach(key => {
         shiftPress = !shiftPress;
       }
 
-      switch(currentLocal) {
+      switch (currentLocal) {
         case 'en':
           currentLocal = 'enSymbol';
-        break;
-      
-        case 'enSymbol':  
-        currentLocal = 'en';
-        break;
+          break;
+
+        case 'enSymbol':
+          currentLocal = 'en';
+          break;
 
         case 'ru':
           currentLocal = 'ruSymbol';
-        break;
-      
-        case 'ruSymbol':  
-        currentLocal = 'ru';
-        break;
-      } 
+          break;
+
+        case 'ruSymbol':
+          currentLocal = 'ru';
+          break;
+      }
     }
+
+    //CAPS LOCK
+    if (key === 20) {
+      if (!capsLock) { event.target.classList.add("click"); }
+      else { event.target.classList.remove("click"); }
+
+      let localLang;
+      for (let i = 0; i < layout.length; i++) {
+        for (let k = 0; k < layout[i].length; k++) {
+          const letter = layout[i][k];
+
+          if (!functionalKeys.includes(letter.code)) {
+            if (!capsLock) {
+              domLayout[i][k].innerHTML = domLayout[i][k].innerHTML.toUpperCase();
+            } else {
+              domLayout[i][k].innerHTML = domLayout[i][k].innerHTML.toLowerCase();
+            }
+          }
+        }
+      }
+      capsLock = !capsLock;
+    }
+
 
 
   });
