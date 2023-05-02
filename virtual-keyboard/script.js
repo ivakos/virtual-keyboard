@@ -1,4 +1,14 @@
-let currentLocal = "en";
+
+window.addEventListener('load', getLocalStorage)
+
+function getLocalStorage() {
+  return localStorage.getItem('currentLocal') ?
+    localStorage.getItem('currentLocal') :
+    'en'
+}
+
+let currentLocal = getLocalStorage();
+
 let domLayout = [];
 let capsLock = false;
 
@@ -51,17 +61,13 @@ for (let i = 0; i < layout.length; i++) {
     key.innerHTML = letter[currentLocal];
     key.id = letter.code;
 
-    keyWrapper.onclick = (event) => {
-      if (!functionalKeys.includes(letter.code)) {
-        const textArea = document.getElementsByClassName("textAreaField")[0];
-        textArea.value = textArea.value + event.target.firstElementChild.innerHTML;
-      }
-    }
-
     key.onclick = (event) => {
+      const textArea = document.getElementsByClassName("textAreaField")[0];
       if (!functionalKeys.includes(letter.code)) {
-        const textArea = document.getElementsByClassName("textAreaField")[0];
         textArea.value = textArea.value + event.target.innerHTML;
+      }
+      if(!functionalKeys.includes(letter.code) && event.target.parentNode){
+        textArea.value = textArea.value + event.target.firstElementChild.innerHTML;
       }
     }
 
@@ -76,6 +82,8 @@ for (let i = 0; i < layout.length; i++) {
     domLayout[i][k] = keyWrapper;
   }
 }
+
+
 
 //--переделать--
 domLayout[0][13].classList.add('backspace');
@@ -94,7 +102,7 @@ domLayout[4][5].classList.add('ctrl');
 
 const description = document.createElement('div');
 description.className = "description";
-description.innerHTML = "Keyboard was created for Windows. <br>Shift + Alt to switch language."
+description.innerHTML = "Keyboard was created for Windows. <br>Ctrl + Alt to switch language."
 wrapper.append(description);
 
 // ----------------------------- SWITCH THEME
@@ -116,11 +124,12 @@ switchTheme.addEventListener('click', () => {
 const functionalKeys = [9, 8, 46, 13, 17, 91, 16, 20, 18];
 
 addEventListener("keydown", (event) => {
-  document.getElementById(event.keyCode).parentNode.classList.add("click");
-
+  const key = document.getElementById(event.keyCode);
+  key.parentNode.classList.add("click");
   if (document.activeElement.classList[0] !== "textAreaField" && !functionalKeys.includes(event.keyCode)) {
     const textArea = document.getElementsByClassName("textAreaField")[0];
-    textArea.value = textArea.value + event.key;
+    textArea.focus();
+    textArea.value = textArea.value + key.innerHTML;
   }
 
   //SHIFT
@@ -150,6 +159,16 @@ addEventListener("keydown", (event) => {
         }
       }
     }
+  }
+
+  //TAB
+  if (event.keyCode === 9) {
+    let textAreaValue = document.querySelectorAll('.textAreaField')[0].value;
+    let array = textAreaValue.split('');
+    array.splice(event.target.selectionStart, 0, '  ');
+    array = array.join('');
+    console.log(array);
+    document.querySelectorAll('.textAreaField')[0].value = array;
   }
 
 });
@@ -184,7 +203,7 @@ addEventListener("keyup", (event) => {
   }
 
   //SWITCH LANGUAGE
-  if (event.keyCode === 18 && event.shiftKey === true) {
+  if (event.keyCode === 18 && event.ctrlKey === true) {
     switch (currentLocal) {
       case 'en':
         currentLocal = 'ru';
@@ -199,6 +218,9 @@ addEventListener("keyup", (event) => {
         currentLocal = 'enSymbol';
         break;
     }
+
+    localStorage.setItem('currentLocal', currentLocal);
+
     for (let i = 0; i < layout.length; i++) {
       for (let k = 0; k < layout[i].length; k++) {
         const letter = layout[i][k];
@@ -207,7 +229,7 @@ addEventListener("keyup", (event) => {
     }
   }
 
-  if (event.keyCode === 16 && event.altKey === true) {
+  if (event.keyCode === 16 && event.ctrlKey === true) {
     switch (currentLocal) {
       case 'en':
         currentLocal = 'ru';
@@ -222,6 +244,9 @@ addEventListener("keyup", (event) => {
         currentLocal = 'enSymbol';
         break;
     }
+
+    localStorage.setItem('currentLocal', currentLocal);
+
     for (let i = 0; i < layout.length; i++) {
       for (let k = 0; k < layout[i].length; k++) {
         const letter = layout[i][k];
@@ -247,6 +272,7 @@ addEventListener("keyup", (event) => {
     }
   }
 
-});
+  
 
-//console.log('Caret at: ', event.target.selectionStart)
+
+});
