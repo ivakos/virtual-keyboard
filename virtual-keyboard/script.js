@@ -66,7 +66,7 @@ for (let i = 0; i < layout.length; i++) {
       if (!functionalKeys.includes(letter.code)) {
         textArea.value = textArea.value + event.target.innerHTML;
       }
-      if(!functionalKeys.includes(letter.code) && event.target.parentNode){
+      if (!functionalKeys.includes(letter.code) && event.target.parentNode) {
         textArea.value = textArea.value + event.target.firstElementChild.innerHTML;
       }
     }
@@ -126,9 +126,10 @@ const functionalKeys = [9, 8, 46, 13, 17, 91, 16, 20, 18];
 addEventListener("keydown", (event) => {
   const key = document.getElementById(event.keyCode);
   key.parentNode.classList.add("click");
+
+  const textArea = document.getElementsByClassName("textAreaField")[0];
+  textArea.focus();
   if (document.activeElement.classList[0] !== "textAreaField" && !functionalKeys.includes(event.keyCode)) {
-    const textArea = document.getElementsByClassName("textAreaField")[0];
-    textArea.focus();
     textArea.value = textArea.value + key.innerHTML;
   }
 
@@ -161,15 +162,39 @@ addEventListener("keydown", (event) => {
     }
   }
 
+  if (event.keyCode === 18) {
+    event.returnValue = false;
+  }
+
   //TAB
   if (event.keyCode === 9) {
-    let textAreaValue = document.querySelectorAll('.textAreaField')[0].value;
+
+    event.returnValue = false;
+
+    const textAreaValue = document.querySelectorAll('.textAreaField')[0].value;
     let array = textAreaValue.split('');
     array.splice(event.target.selectionStart, 0, '  ');
     array = array.join('');
-    console.log(array);
     document.querySelectorAll('.textAreaField')[0].value = array;
   }
+
+  // //BackSpace
+  // if (event.keyCode === 8) {
+  //   const textAreaValue = document.querySelectorAll('.textAreaField')[0].value;
+  //   let array = textAreaValue.split('');
+  //   array.splice(event.target.selectionStart, -1);
+  //   array = array.join('');
+  //   document.querySelectorAll('.textAreaField')[0].value = array;
+  // }
+
+  // //Delete
+  // if (event.keyCode === 46) {
+  //   const textAreaValue = document.querySelectorAll('.textAreaField')[0].value;
+  //   let array = textAreaValue.split('');
+  //   array.splice(event.target.selectionStart, -1);
+  //   array = array.join('');
+  //   document.querySelectorAll('.textAreaField')[0].value = array;
+  // }
 
 });
 
@@ -272,7 +297,6 @@ addEventListener("keyup", (event) => {
     }
   }
 
-  
 
 
 });
