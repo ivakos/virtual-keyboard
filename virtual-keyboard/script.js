@@ -4,7 +4,6 @@ let currentLocal = localStorage.getItem('currentLocal') ?
 
 let domLayout = [];
 let capsLock = false;
-let shiftPress = false;
 
 let positionCursor = 0;
 
@@ -133,9 +132,6 @@ keys.forEach(key => {
 
     //SHIFT
     if (key === 16) {
-      if (!shiftPress) { event.target.classList.add("click"); }
-      else { event.target.classList.remove("click"); }
-
       let localLang;
       for (let i = 0; i < layout.length; i++) {
         for (let k = 0; k < layout[i].length; k++) {
@@ -194,7 +190,6 @@ keys.forEach(key => {
             }
           }
         }
-        shiftPress = !shiftPress;
       }
 
       switch (currentLocal) {
@@ -288,34 +283,36 @@ addEventListener("keydown", (event) => {
   const key = document.getElementById(event.keyCode);
 
   if (event.keyCode != 16) {
-    if(event.keyCode != 17){
-      if(event.keyCode != 18){
-        key.classList.add("click");
+    if (event.keyCode != 17) {
+      if (event.keyCode != 18) {
+        if (event.keyCode != 20) {
+          key.classList.add("click");
+        }
       }
     }
   }
 
-  if(event.code == "ShiftLeft"){
+  if (event.code == "ShiftLeft") {
     domLayout[3][0].classList.add('click')
   }
 
-  if(event.code == "ShiftRight"){
+  if (event.code == "ShiftRight") {
     domLayout[3][11].classList.add('click')
   }
 
-  if(event.code == "ControlLeft"){
+  if (event.code == "ControlLeft") {
     domLayout[4][0].classList.add('click')
   }
 
-  if(event.code == "ControlRight"){
+  if (event.code == "ControlRight") {
     domLayout[4][5].classList.add('click')
   }
 
-  if(event.code == "AltLeft"){
+  if (event.code == "AltLeft") {
     domLayout[4][2].classList.add('click')
   }
 
-  if(event.code == "AltRight"){
+  if (event.code == "AltRight") {
     domLayout[4][4].classList.add('click')
   }
 
@@ -439,29 +436,31 @@ addEventListener("keyup", (event) => {
   setTimeout(() => {
     const key = document.getElementById(event.keyCode);
     if (event.keyCode != 16) {
-      key.classList.remove("click");
+      if(event.keyCode != 20){
+        key.classList.remove("click");
+      }
     }
-    if(event.code == "ShiftLeft"){
+    if (event.code == "ShiftLeft") {
       domLayout[3][0].classList.remove('click')
     }
-  
-    if(event.code == "ShiftRight"){
+
+    if (event.code == "ShiftRight") {
       domLayout[3][11].classList.remove('click')
     }
 
-    if(event.code == "ControlLeft"){
+    if (event.code == "ControlLeft") {
       domLayout[4][0].classList.remove('click')
     }
-  
-    if(event.code == "ControlRight"){
+
+    if (event.code == "ControlRight") {
       domLayout[4][5].classList.remove('click')
     }
-    
-    if(event.code == "AltLeft"){
+
+    if (event.code == "AltLeft") {
       domLayout[4][2].classList.remove('click')
     }
-  
-    if(event.code == "AltRight"){
+
+    if (event.code == "AltRight") {
       domLayout[4][4].classList.remove('click')
     }
   }, 100)
