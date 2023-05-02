@@ -110,10 +110,13 @@ textArea.addEventListener('keydown', (event) => {
 keys.forEach(key => {
   key.addEventListener('click', (event) => {
     const key = +event.target.id;
+    const textArea = document.getElementsByClassName("textAreaField")[0];
     textArea.focus();
-
     if (!functionalKeys.includes(key)) {
-      textArea.value = textArea.value + event.target.innerHTML;
+      let array = textArea.value.split('');
+      array.splice(textArea.selectionStart, 0, event.target.innerHTML);
+      array = array.join('');
+      textArea.value = array;
     }
 
     //SHIFT
@@ -208,7 +211,6 @@ keys.forEach(key => {
       if (!capsLock) { event.target.classList.add("click"); }
       else { event.target.classList.remove("click"); }
 
-      let localLang;
       for (let i = 0; i < layout.length; i++) {
         for (let k = 0; k < layout[i].length; k++) {
           const letter = layout[i][k];
@@ -225,6 +227,29 @@ keys.forEach(key => {
       capsLock = !capsLock;
     }
 
+    //TAB
+    if (key === 9) {
+      let array = textArea.value.split('');
+      array.splice(textArea.selectionStart, 0, '  ');
+      array = array.join('');
+      textArea.value = array;
+    }
+
+    //BackSpace
+    if (key === 8) {
+      let array = textArea.value.split('');
+      array.splice(textArea.selectionStart - 1, 1);
+      array = array.join('');
+      textArea.value = array;
+    }
+
+    //Delete
+    if (key === 46) {
+      let array = textArea.value.split('');
+      array.splice(textArea.selectionStart, 1);
+      array = array.join('');
+      textArea.value = array;
+    }
 
 
   });
@@ -313,23 +338,21 @@ addEventListener("keydown", (event) => {
     textArea.value = array;
   }
 
-  // //BackSpace
-  // if (event.keyCode === 8) {
-  //   const textAreaValue = document.querySelectorAll('.textAreaField')[0].value;
-  //   let array = textAreaValue.split('');
-  //   array.splice(event.target.selectionStart, -1);
-  //   array = array.join('');
-  //   document.querySelectorAll('.textAreaField')[0].value = array;
-  // }
+  //BackSpace
+  if (event.keyCode === 8) {
+    let array = textArea.value.split('');
+    array.splice(textArea.selectionStart - 1, 1);
+    array = array.join('');
+    textArea.value = array;
+  }
 
-  // //Delete
-  // if (event.keyCode === 46) {
-  //   const textAreaValue = document.querySelectorAll('.textAreaField')[0].value;
-  //   let array = textAreaValue.split('');
-  //   array.splice(event.target.selectionStart, -1);
-  //   array = array.join('');
-  //   document.querySelectorAll('.textAreaField')[0].value = array;
-  // }
+  //Delete
+  if (event.keyCode === 46) {
+    let array = textArea.value.split('');
+    array.splice(textArea.selectionStart, 1);
+    array = array.join('');
+    textArea.value = array;
+  }
 
 });
 
