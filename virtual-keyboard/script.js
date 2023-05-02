@@ -109,6 +109,7 @@ textArea.addEventListener('keydown', (event) => {
   event.preventDefault();
 })
 
+
 textArea.addEventListener('click', (event) => {
   positionCursor = textArea.selectionStart;
 });
@@ -117,12 +118,16 @@ keys.forEach(key => {
   key.addEventListener('click', (event) => {
     const key = +event.target.id;
     const textArea = document.getElementsByClassName("textAreaField")[0];
+
+    textArea.focus();
+
     if (!functionalKeys.includes(key)) {
       let array = textArea.value.split('');
       array.splice(positionCursor, 0, event.target.innerHTML);
       array = array.join('');
       textArea.value = array;
       positionCursor++;
+      textArea.setSelectionRange(positionCursor, positionCursor);
     }
 
     //SHIFT
@@ -239,6 +244,8 @@ keys.forEach(key => {
       array.splice(textArea.selectionStart, 0, '  ');
       array = array.join('');
       textArea.value = array;
+      positionCursor += 2;
+      textArea.setSelectionRange(positionCursor, positionCursor);
     }
 
     //BackSpace
@@ -264,6 +271,16 @@ keys.forEach(key => {
       }
     }
 
+    //ENTER
+    if (key === 13) {
+      let array = textArea.value.split('');
+      console.log(positionCursor);
+      array.splice(positionCursor, 0, '\n');
+      array = array.join('');
+      textArea.value = array;
+      textArea.setSelectionRange(positionCursor, positionCursor);
+    }
+
 
   });
 });
@@ -282,6 +299,7 @@ addEventListener("keydown", (event) => {
     array = array.join('');
     textArea.value = array;
     positionCursor++;
+    textArea.setSelectionRange(positionCursor, positionCursor);
   }
 
   //SHIFT
@@ -350,6 +368,8 @@ addEventListener("keydown", (event) => {
     array.splice(event.target.selectionStart, 0, '  ');
     array = array.join('');
     textArea.value = array;
+    positionCursor += 2;
+    textArea.setSelectionRange(positionCursor, positionCursor);
   }
 
   //BackSpace
@@ -374,6 +394,17 @@ addEventListener("keydown", (event) => {
       textArea.setSelectionRange(positionCursor, positionCursor);
     }
   }
+
+  //ENTER
+  if (event.keyCode === 13) {
+    let array = textArea.value.split('');
+    console.log(positionCursor);
+    array.splice(positionCursor, 0, '\n');
+    array = array.join('');
+    textArea.value = array;
+    textArea.setSelectionRange(positionCursor, positionCursor);
+  }
+
 
 });
 
