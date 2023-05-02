@@ -1,0 +1,359 @@
+let currentLocal = localStorage.getItem('currentLocal') ?
+  localStorage.getItem('currentLocal') :
+  'en'
+
+let domLayout = [];
+let capsLock = false;
+
+const functionalKeys = [9, 8, 46, 13, 17, 91, 16, 20, 18];
+
+
+const layout = [
+  [createKey(192, '`', '~', 'ё', 'Ё'), createKey(49, 1, '!', 1, '!'), createKey(50, 2, '@', 2, '@'), createKey(51, 3, '#', 3, '#'), createKey(52, 4, '$', 4, '$'), createKey(53, 5, '%', 5, '%'), createKey(54, 6, '^', 6, '^'), createKey(55, 7, '&', 7, '&'), createKey(56, 8, '*', 8, '*'), createKey(57, 9, '(', 9, '('), createKey(48, 0, ')', 0, ')'), createKey(189, '-', '_', '-', '_'), createKey(187, '=', '+', '=', '+'), createKey(8, 'Backspace', 'Backspace', 'Backspace', 'Backspace')],
+  [createKey(9, 'Tab', 'Tab', 'Tab', 'Tab'), createKey(81, 'q', 'Q', 'й', 'Й'), createKey(87, 'w', 'W', 'ц', 'Ц'), createKey(69, 'e', 'E', 'у', 'У'), createKey(82, 'r', 'R', 'к', 'К'), createKey(84, 't', 'T', 'е', 'Е'), createKey(89, 'y', 'Y', 'н', 'Н'), createKey(85, 'u', 'U', 'г', 'Г'), createKey(73, 'i', 'I', 'ш', 'Ш'), createKey(79, 'o', 'O', 'щ', 'Щ'), createKey(80, 'p', 'P', 'з', 'З'), createKey(219, '[', '{', 'х', 'Х'), createKey(221, ']', '}', 'ъ', 'Ъ'), createKey(220, '\\', '|', '\\', '/'), createKey(46, 'del', 'del', 'del', 'del')],
+  [createKey(20, 'Caps Lock', 'Caps Lock', 'Caps Lock', 'Caps Lock'), createKey(65, 'a', 'A', 'ф', 'Ф'), createKey(83, 's', 'S', 'ы', 'Ы'), createKey(68, 'd', 'D', 'в', 'В'), createKey(70, 'f', 'F', 'а', 'А'), createKey(71, 'g', 'G', 'п', 'П'), createKey(72, 'h', 'H', 'р', 'Р'), createKey(74, 'j', 'J', 'о', 'О'), createKey(75, 'k', 'K', 'л', 'Л'), createKey(76, 'l', 'L', 'д', 'Д'), createKey(186, ';', ':', 'ж', 'Ж'), createKey(222, "'", '"', 'э', 'Э'), createKey(13, 'Enter', 'Enter', 'Enter', 'Enter')],
+  [createKey(16, "Shift", 'Shift', "Shift", 'Shift'), createKey(90, 'z', 'Z', 'я', 'Я'), createKey(88, 'x', 'X', 'ч', 'Ч'), createKey(67, 'c', 'C', 'с', 'С'), createKey(86, 'v', 'V', 'м', 'М'), createKey(66, 'b', 'B', 'и', 'И'), createKey(78, 'n', 'N', 'т', 'Т'), createKey(77, 'm', 'M', 'ь', 'Ь'), createKey(188, ',', '<', 'б', 'Б'), createKey(190, '.', '>', 'ю', 'Ю'), createKey(191, '/', '?', '.', ','), createKey(16, 'Shift', 'Shift', 'Shift', 'Shift'), createKey(38, '↑', '↑', '↑', '↑')],
+  [createKey(17, 'Ctrl', 'Ctrl', 'Ctrl', 'Ctrl'), createKey(91, 'Win', 'Win', 'Win', 'Win'), createKey(18, 'Alt', 'Alt', 'Alt', 'Alt'), createKey(32, ' ', ' ', ' ', ' '), createKey(18, 'Alt', 'Alt', 'Alt', 'Alt'), createKey(17, 'Ctrl', 'Ctrl', 'Ctrl', 'Ctrl'), createKey(37, '←', '←', '←', '←'), createKey(40, '↓', '↓', '↓', '↓'), createKey(39, '→', '→', '→', '→')]
+]
+
+function createKey(keyCode, enValue, enSymbol, ruValue, ruSymbol) {
+  return {
+    code: keyCode,
+    en: enValue,
+    enSymbol: enSymbol,
+    ru: ruValue,
+    ruSymbol: ruSymbol,
+  }
+}
+
+const body = document.body;
+const wrapper = document.createElement('div');
+wrapper.className = "wrapper";
+body.append(wrapper);
+
+const textAreaField = document.createElement('textarea');
+textAreaField.className = "textAreaField";
+textAreaField.setAttribute("autofocus", "autofocus");
+wrapper.append(textAreaField);
+
+const keyboard = document.createElement('div');
+keyboard.className = "keyboard";
+wrapper.append(keyboard);
+
+for (let i = 0; i < layout.length; i++) {
+  domLayout[i] = [];
+  const row = document.createElement('div');
+  row.className = "row";
+  keyboard.append(row);
+
+  for (let k = 0; k < layout[i].length; k++) {
+    const keyWrapper = document.createElement('div');
+    keyWrapper.className = "key-wrapper";
+    row.append(keyWrapper);
+
+    const key = document.createElement('p');
+    const letter = layout[i][k];
+    key.className = "key";
+    key.innerHTML = letter[currentLocal];
+    key.id = letter.code;
+
+    if ((i == 0 && (k == 0 || k == 13)) ||
+      (i == 1 && (k == 0 || k == 14)) ||
+      (i == 2 && (k == 0 || k == 12)) ||
+      (i == 3 && (k == 0 || k == 11 || k == 12)) ||
+      (i == 4 && (k != 3))) {
+      keyWrapper.classList.add('key-special');
+    }
+    keyWrapper.append(key);
+    domLayout[i][k] = keyWrapper;
+  }
+}
+
+//--переделать--
+domLayout[0][13].classList.add('backspace');
+
+domLayout[1][0].classList.add('tab');
+domLayout[1][14].classList.add('delete');
+
+domLayout[2][0].classList.add('caps-lock');
+domLayout[2][12].classList.add('enter');
+
+domLayout[3][0].classList.add('shift');
+
+domLayout[4][0].classList.add('ctrl');
+domLayout[4][3].classList.add('space');
+domLayout[4][5].classList.add('ctrl');
+
+const description = document.createElement('div');
+description.className = "description";
+description.innerHTML = "Keyboard was created for Windows. <br>Ctrl + Alt to switch language."
+wrapper.append(description);
+
+// ----------------------------- SWITCH THEME
+const switchTheme = document.createElement('div');
+switchTheme.className = "switch-theme";
+wrapper.append(switchTheme);
+
+const keysWrapper = document.querySelectorAll('.key-wrapper');
+const keys = document.querySelectorAll('.key');
+
+const lightTheme = [body, textAreaField, keyboard, description];
+switchTheme.addEventListener('click', () => {
+  switchTheme.classList.toggle('active')
+  lightTheme.forEach((element) => element.classList.toggle('dark'));
+  keys.forEach((element) => element.classList.toggle('dark'));
+})
+// -----------------------------END SWITCH THEME
+
+const textArea = document.getElementsByClassName("textAreaField")[0];
+
+// keys.forEach(key => {
+//   key.addEventListener('click', event => {
+//     console.log(event);
+//     const key = document.getElementById(event.firstElementChild);
+//     console.log(key);
+//     if (document.activeElement.classList[0] !== "textAreaField" && !functionalKeys.includes(event.keyCode)) {
+//       console.log(event);
+//       textArea.value = textArea.value + event.target.innerHTML;
+//     }
+//   textArea.focus();
+//   })
+// });
+
+
+addEventListener("keydown", (event) => {
+  const key = document.getElementById(event.keyCode);
+  if (event.keyCode != 20) {
+    key.parentNode.classList.add("click");
+  }
+
+  const textArea = document.getElementsByClassName("textAreaField")[0];
+  textArea.focus();
+  if (document.activeElement.classList[0] !== "textAreaField" && !functionalKeys.includes(event.keyCode)) {
+    textArea.value = textArea.value + key.innerHTML;
+  }
+
+  //SHIFT
+  if (event.keyCode === 16) {
+    for (let i = 0; i < layout.length; i++) {
+      for (let k = 0; k < layout[i].length; k++) {
+        const letter = layout[i][k];
+        if (!capsLock) {
+
+          if (currentLocal === "en") { domLayout[i][k].firstElementChild.innerHTML = letter.enSymbol; }
+          if (currentLocal === "ru") { domLayout[i][k].firstElementChild.innerHTML = letter.ruSymbol; }
+
+        } else {
+
+          if (currentLocal === "en") {
+            if (letter.enSymbol.toLowerCase() != letter.en) {
+              domLayout[i][k].firstElementChild.innerHTML = letter.enSymbol;
+            } else {
+              domLayout[i][k].firstElementChild.innerHTML = letter.en;
+            }
+          }
+
+          if (currentLocal === "ru") {
+            if (letter.ruSymbol.toLowerCase() != letter.ru) {
+              domLayout[i][k].firstElementChild.innerHTML = letter.ruSymbol;
+            } else {
+              domLayout[i][k].firstElementChild.innerHTML = letter.ru;
+            }
+          }
+
+        }
+      }
+    }
+  }
+
+  //CAPS LOCK
+  if (event.keyCode === 20) {
+
+    if (!capsLock) { key.parentNode.classList.add("click"); }
+    else { key.parentNode.classList.remove("click"); }
+
+    let localCapsLock = !capsLock;
+    for (let i = 0; i < layout.length; i++) {
+      for (let k = 0; k < layout[i].length; k++) {
+        const letter = layout[i][k];
+        if (!functionalKeys.includes(letter.code)) {
+          if (!localCapsLock) {
+            domLayout[i][k].firstElementChild.innerHTML = domLayout[i][k].firstElementChild.innerHTML.toLowerCase();
+          } else {
+
+            domLayout[i][k].firstElementChild.innerHTML = domLayout[i][k].firstElementChild.innerHTML.toUpperCase();
+          }
+        }
+      }
+    }
+  }
+
+  if (event.keyCode === 18) {
+    event.returnValue = false;
+  }
+
+  //TAB
+  if (event.keyCode === 9) {
+
+    event.returnValue = false;
+
+    let array = textArea.value.split('');
+    array.splice(event.target.selectionStart, 0, '  ');
+    array = array.join('');
+    textArea.value = array;
+  }
+
+  // //BackSpace
+  // if (event.keyCode === 8) {
+  //   const textAreaValue = document.querySelectorAll('.textAreaField')[0].value;
+  //   let array = textAreaValue.split('');
+  //   array.splice(event.target.selectionStart, -1);
+  //   array = array.join('');
+  //   document.querySelectorAll('.textAreaField')[0].value = array;
+  // }
+
+  // //Delete
+  // if (event.keyCode === 46) {
+  //   const textAreaValue = document.querySelectorAll('.textAreaField')[0].value;
+  //   let array = textAreaValue.split('');
+  //   array.splice(event.target.selectionStart, -1);
+  //   array = array.join('');
+  //   document.querySelectorAll('.textAreaField')[0].value = array;
+  // }
+
+});
+
+addEventListener("keyup", (event) => {
+  setTimeout(() => {
+    const key = document.getElementById(event.keyCode);
+    if (event.keyCode != 20) {
+      key.parentNode.classList.remove("click");
+    }
+  }, 100)
+
+
+  //SHIFT
+  if (event.keyCode === 16) {
+    for (let i = 0; i < layout.length; i++) {
+      for (let k = 0; k < layout[i].length; k++) {
+        const letter = layout[i][k];
+        if (!capsLock) {
+          if (currentLocal === "en") { domLayout[i][k].firstElementChild.innerHTML = letter.en; }
+          if (currentLocal === "ru") { domLayout[i][k].firstElementChild.innerHTML = letter.ru; }
+        } else {
+
+          if (currentLocal === "en") {
+            if (letter.enSymbol.toLowerCase() != letter.en) {
+              domLayout[i][k].firstElementChild.innerHTML = letter.en;
+            } else {
+              domLayout[i][k].firstElementChild.innerHTML = letter.enSymbol;
+            }
+          }
+
+          if (currentLocal === "ru") {
+            if (letter.ruSymbol.toLowerCase() != letter.ru) {
+              domLayout[i][k].firstElementChild.innerHTML = letter.ru;
+            } else {
+              domLayout[i][k].firstElementChild.innerHTML = letter.ruSymbol;
+            }
+          }
+
+        }
+      }
+    }
+  }
+
+
+
+  //SWITCH LANGUAGE
+  if (event.keyCode === 18 && event.ctrlKey === true) {
+    currentLocal = currentLocal === 'en'? 'ru': 'en';
+    for (let i = 0; i < layout.length; i++) {
+      for (let k = 0; k < layout[i].length; k++) {
+        const letter = layout[i][k];
+
+        if (!capsLock) {
+          if (currentLocal === "en") {
+            domLayout[i][k].firstElementChild.innerHTML = letter.en;
+          }
+
+          if (currentLocal === "ru") {
+            domLayout[i][k].firstElementChild.innerHTML = letter.ru;
+          }
+        } else {
+          if (currentLocal === "en") {
+            if (letter.enSymbol.toLowerCase() != letter.en) {
+              domLayout[i][k].firstElementChild.innerHTML = letter.en;
+            } else {
+              domLayout[i][k].firstElementChild.innerHTML = letter.enSymbol;
+            }
+          }
+
+          if (currentLocal === "ru") {
+            if (letter.ruSymbol.toLowerCase() != letter.ru) {
+              domLayout[i][k].firstElementChild.innerHTML = letter.ru;
+            } else {
+              domLayout[i][k].firstElementChild.innerHTML = letter.ruSymbol;
+            }
+          }
+        }
+      }
+    }
+    localStorage.setItem('currentLocal', currentLocal);
+  }
+
+  if (event.keyCode === 17 && event.altKey === true) {
+    currentLocal = currentLocal === 'en'? 'ru': 'en';
+    for (let i = 0; i < layout.length; i++) {
+      for (let k = 0; k < layout[i].length; k++) {
+        const letter = layout[i][k];
+        if (!capsLock) {
+          if (currentLocal === "en") {
+            domLayout[i][k].firstElementChild.innerHTML = letter.en;
+          }
+
+          if (currentLocal === "ru") {
+            domLayout[i][k].firstElementChild.innerHTML = letter.ru;
+          }
+
+        } else {
+
+          if (currentLocal === "en") {
+            if (letter.enSymbol.toLowerCase() != letter.en) {
+              domLayout[i][k].firstElementChild.innerHTML = letter.en;
+            } else {
+              domLayout[i][k].firstElementChild.innerHTML = letter.enSymbol;
+            }
+          }
+
+          if (currentLocal === "ru") {
+            if (letter.ruSymbol.toLowerCase() != letter.ru) {
+              domLayout[i][k].firstElementChild.innerHTML = letter.ru;
+            } else {
+              domLayout[i][k].firstElementChild.innerHTML = letter.ruSymbol;
+            }
+          }
+        }
+      }
+    }
+    localStorage.setItem('currentLocal', currentLocal);
+  }
+
+  //CAPS LOCK
+  if (event.keyCode === 20) {
+    capsLock = !capsLock;
+    for (let i = 0; i < layout.length; i++) {
+      for (let k = 0; k < layout[i].length; k++) {
+        const letter = layout[i][k];
+        if (!functionalKeys.includes(letter.code)) {
+          if (capsLock) {
+            domLayout[i][k].firstElementChild.innerHTML = domLayout[i][k].firstElementChild.innerHTML.toUpperCase();
+          } else {
+            domLayout[i][k].firstElementChild.innerHTML = domLayout[i][k].firstElementChild.innerHTML.toLowerCase();
+          }
+        }
+      }
+    }
+  }
+
+});
