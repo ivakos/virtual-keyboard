@@ -6,6 +6,8 @@ let domLayout = [];
 let capsLock = false;
 let shiftPress = false;
 
+let positionCursor = 0;
+
 const functionalKeys = [9, 8, 46, 13, 17, 91, 16, 20, 18];
 
 
@@ -107,16 +109,20 @@ textArea.addEventListener('keydown', (event) => {
   event.preventDefault();
 })
 
+textArea.addEventListener('click', (event) => {
+  positionCursor = textArea.selectionStart;
+});
+
 keys.forEach(key => {
   key.addEventListener('click', (event) => {
     const key = +event.target.id;
     const textArea = document.getElementsByClassName("textAreaField")[0];
-    textArea.focus();
     if (!functionalKeys.includes(key)) {
       let array = textArea.value.split('');
-      array.splice(textArea.selectionStart, 0, event.target.innerHTML);
+      array.splice(positionCursor, 0, event.target.innerHTML);
       array = array.join('');
       textArea.value = array;
+      positionCursor++;
     }
 
     //SHIFT
@@ -237,24 +243,30 @@ keys.forEach(key => {
 
     //BackSpace
     if (key === 8) {
-      let array = textArea.value.split('');
-      array.splice(textArea.selectionStart - 1, 1);
-      array = array.join('');
-      textArea.value = array;
+      if (positionCursor != 0) {
+        let array = textArea.value.split('');
+        array.splice(positionCursor - 1, 1);
+        array = array.join('');
+        textArea.value = array;
+        positionCursor--;
+        textArea.setSelectionRange(positionCursor, positionCursor);
+      }
     }
 
     //Delete
     if (key === 46) {
-      let array = textArea.value.split('');
-      array.splice(textArea.selectionStart, 1);
-      array = array.join('');
-      textArea.value = array;
+      if (positionCursor != textArea.value.length) {
+        let array = textArea.value.split('');
+        array.splice(positionCursor, 1);
+        array = array.join('');
+        textArea.value = array;
+        textArea.setSelectionRange(positionCursor, positionCursor);
+      }
     }
 
 
   });
 });
-
 
 addEventListener("keydown", (event) => {
   const key = document.getElementById(event.keyCode);
@@ -263,11 +275,13 @@ addEventListener("keydown", (event) => {
   }
 
   const textArea = document.getElementsByClassName("textAreaField")[0];
-  textArea.focus();
-
 
   if (!functionalKeys.includes(event.keyCode)) {
-    textArea.value = textArea.value + key.innerHTML;
+    let array = textArea.value.split('');
+    array.splice(positionCursor, 0, key.innerHTML);
+    array = array.join('');
+    textArea.value = array;
+    positionCursor++;
   }
 
   //SHIFT
@@ -340,18 +354,25 @@ addEventListener("keydown", (event) => {
 
   //BackSpace
   if (event.keyCode === 8) {
-    let array = textArea.value.split('');
-    array.splice(textArea.selectionStart - 1, 1);
-    array = array.join('');
-    textArea.value = array;
+    if (positionCursor != 0) {
+      let array = textArea.value.split('');
+      array.splice(positionCursor - 1, 1);
+      array = array.join('');
+      textArea.value = array;
+      positionCursor--;
+      textArea.setSelectionRange(positionCursor, positionCursor);
+    }
   }
 
   //Delete
   if (event.keyCode === 46) {
-    let array = textArea.value.split('');
-    array.splice(textArea.selectionStart, 1);
-    array = array.join('');
-    textArea.value = array;
+    if (positionCursor != textArea.value.length) {
+      let array = textArea.value.split('');
+      array.splice(positionCursor, 1);
+      array = array.join('');
+      textArea.value = array;
+      textArea.setSelectionRange(positionCursor, positionCursor);
+    }
   }
 
 });
