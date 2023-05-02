@@ -1,16 +1,12 @@
-
-window.addEventListener('load', getLocalStorage)
-
-function getLocalStorage() {
-  return localStorage.getItem('currentLocal') ?
-    localStorage.getItem('currentLocal') :
-    'en'
-}
-
-let currentLocal = getLocalStorage();
+let currentLocal = localStorage.getItem('currentLocal') ?
+  localStorage.getItem('currentLocal') :
+  'en'
 
 let domLayout = [];
 let capsLock = false;
+
+const functionalKeys = [9, 8, 46, 13, 17, 91, 16, 20, 18];
+
 
 const layout = [
   [createKey(192, '`', '~', 'ё', 'Ё'), createKey(49, 1, '!', 1, '!'), createKey(50, 2, '@', 2, '@'), createKey(51, 3, '#', 3, '#'), createKey(52, 4, '$', 4, '$'), createKey(53, 5, '%', 5, '%'), createKey(54, 6, '^', 6, '^'), createKey(55, 7, '&', 7, '&'), createKey(56, 8, '*', 8, '*'), createKey(57, 9, '(', 9, '('), createKey(48, 0, ')', 0, ')'), createKey(189, '-', '_', '-', '_'), createKey(187, '=', '+', '=', '+'), createKey(8, 'Backspace', 'Backspace', 'Backspace', 'Backspace')],
@@ -61,16 +57,6 @@ for (let i = 0; i < layout.length; i++) {
     key.innerHTML = letter[currentLocal];
     key.id = letter.code;
 
-    key.onclick = (event) => {
-      const textArea = document.getElementsByClassName("textAreaField")[0];
-      if (!functionalKeys.includes(letter.code)) {
-        textArea.value = textArea.value + event.target.innerHTML;
-      }
-      if (!functionalKeys.includes(letter.code) && event.target.parentNode) {
-        textArea.value = textArea.value + event.target.firstElementChild.innerHTML;
-      }
-    }
-
     if ((i == 0 && (k == 0 || k == 13)) ||
       (i == 1 && (k == 0 || k == 14)) ||
       (i == 2 && (k == 0 || k == 12)) ||
@@ -82,8 +68,6 @@ for (let i = 0; i < layout.length; i++) {
     domLayout[i][k] = keyWrapper;
   }
 }
-
-
 
 //--переделать--
 domLayout[0][13].classList.add('backspace');
@@ -121,11 +105,27 @@ switchTheme.addEventListener('click', () => {
 })
 // -----------------------------END SWITCH THEME
 
-const functionalKeys = [9, 8, 46, 13, 17, 91, 16, 20, 18];
+const textArea = document.getElementsByClassName("textAreaField")[0];
+
+// keys.forEach(key => {
+//   key.addEventListener('click', event => {
+//     console.log(event);
+//     const key = document.getElementById(event.firstElementChild);
+//     console.log(key);
+//     if (document.activeElement.classList[0] !== "textAreaField" && !functionalKeys.includes(event.keyCode)) {
+//       console.log(event);
+//       textArea.value = textArea.value + event.target.innerHTML;
+//     }
+//   textArea.focus();
+//   })
+// });
+
 
 addEventListener("keydown", (event) => {
   const key = document.getElementById(event.keyCode);
-  key.parentNode.classList.add("click");
+  if (event.keyCode != 20) {
+    key.parentNode.classList.add("click");
+  }
 
   const textArea = document.getElementsByClassName("textAreaField")[0];
   textArea.focus();
@@ -138,23 +138,49 @@ addEventListener("keydown", (event) => {
     for (let i = 0; i < layout.length; i++) {
       for (let k = 0; k < layout[i].length; k++) {
         const letter = layout[i][k];
-        if (currentLocal === "en") domLayout[i][k].firstElementChild.innerHTML = letter.enSymbol;
-        if (currentLocal === "ru") domLayout[i][k].firstElementChild.innerHTML = letter.ruSymbol;
-        if (currentLocal === "enSymbol") domLayout[i][k].firstElementChild.innerHTML = letter.en;
-        if (currentLocal === "ruSymbol") domLayout[i][k].firstElementChild.innerHTML = letter.ru;
+        if (!capsLock) {
+
+          if (currentLocal === "en") { domLayout[i][k].firstElementChild.innerHTML = letter.enSymbol; }
+          if (currentLocal === "ru") { domLayout[i][k].firstElementChild.innerHTML = letter.ruSymbol; }
+
+        } else {
+
+          if (currentLocal === "en") {
+            if (letter.enSymbol.toLowerCase() != letter.en) {
+              domLayout[i][k].firstElementChild.innerHTML = letter.enSymbol;
+            } else {
+              domLayout[i][k].firstElementChild.innerHTML = letter.en;
+            }
+          }
+
+          if (currentLocal === "ru") {
+            if (letter.ruSymbol.toLowerCase() != letter.ru) {
+              domLayout[i][k].firstElementChild.innerHTML = letter.ruSymbol;
+            } else {
+              domLayout[i][k].firstElementChild.innerHTML = letter.ru;
+            }
+          }
+
+        }
       }
     }
   }
 
   //CAPS LOCK
   if (event.keyCode === 20) {
+
+    if (!capsLock) { key.parentNode.classList.add("click"); }
+    else { key.parentNode.classList.remove("click"); }
+
+    let localCapsLock = !capsLock;
     for (let i = 0; i < layout.length; i++) {
       for (let k = 0; k < layout[i].length; k++) {
         const letter = layout[i][k];
         if (!functionalKeys.includes(letter.code)) {
-          if (capsLock) {
+          if (!localCapsLock) {
             domLayout[i][k].firstElementChild.innerHTML = domLayout[i][k].firstElementChild.innerHTML.toLowerCase();
           } else {
+
             domLayout[i][k].firstElementChild.innerHTML = domLayout[i][k].firstElementChild.innerHTML.toUpperCase();
           }
         }
@@ -171,11 +197,10 @@ addEventListener("keydown", (event) => {
 
     event.returnValue = false;
 
-    const textAreaValue = document.querySelectorAll('.textAreaField')[0].value;
-    let array = textAreaValue.split('');
+    let array = textArea.value.split('');
     array.splice(event.target.selectionStart, 0, '  ');
     array = array.join('');
-    document.querySelectorAll('.textAreaField')[0].value = array;
+    textArea.value = array;
   }
 
   // //BackSpace
@@ -200,89 +225,123 @@ addEventListener("keydown", (event) => {
 
 addEventListener("keyup", (event) => {
   setTimeout(() => {
-    document.getElementById(event.keyCode).parentNode.classList.remove("click");
+    const key = document.getElementById(event.keyCode);
+    if (event.keyCode != 20) {
+      key.parentNode.classList.remove("click");
+    }
   }, 100)
+
 
   //SHIFT
   if (event.keyCode === 16) {
     for (let i = 0; i < layout.length; i++) {
       for (let k = 0; k < layout[i].length; k++) {
         const letter = layout[i][k];
-        switch (currentLocal) {
-          case 'en':
-            currentLocal = 'en';
-            break;
-          case 'ru':
-            currentLocal = 'ru';
-            break;
-          case 'enSymbol':
-            currentLocal = 'enSymbol';
-            break;
-          case 'ruSymbol':
-            currentLocal = 'ruSymbol';
-            break;
+        if (!capsLock) {
+          if (currentLocal === "en") { domLayout[i][k].firstElementChild.innerHTML = letter.en; }
+          if (currentLocal === "ru") { domLayout[i][k].firstElementChild.innerHTML = letter.ru; }
+        } else {
+
+          if (currentLocal === "en") {
+            if (letter.enSymbol.toLowerCase() != letter.en) {
+              domLayout[i][k].firstElementChild.innerHTML = letter.en;
+            } else {
+              domLayout[i][k].firstElementChild.innerHTML = letter.enSymbol;
+            }
+          }
+
+          if (currentLocal === "ru") {
+            if (letter.ruSymbol.toLowerCase() != letter.ru) {
+              domLayout[i][k].firstElementChild.innerHTML = letter.ru;
+            } else {
+              domLayout[i][k].firstElementChild.innerHTML = letter.ruSymbol;
+            }
+          }
+
         }
-        domLayout[i][k].firstElementChild.innerHTML = letter[currentLocal];
       }
     }
   }
+
+
 
   //SWITCH LANGUAGE
   if (event.keyCode === 18 && event.ctrlKey === true) {
-    switch (currentLocal) {
-      case 'en':
-        currentLocal = 'ru';
-        break;
-      case 'ru':
-        currentLocal = 'en';
-        break;
-      case 'enSymbol':
-        currentLocal = 'ruSymbol';
-        break;
-      case 'ruSymbol':
-        currentLocal = 'enSymbol';
-        break;
-    }
-
-    localStorage.setItem('currentLocal', currentLocal);
-
+    currentLocal = currentLocal === 'en'? 'ru': 'en';
     for (let i = 0; i < layout.length; i++) {
       for (let k = 0; k < layout[i].length; k++) {
         const letter = layout[i][k];
-        domLayout[i][k].firstElementChild.innerHTML = letter[currentLocal];
+
+        if (!capsLock) {
+          if (currentLocal === "en") {
+            domLayout[i][k].firstElementChild.innerHTML = letter.en;
+          }
+
+          if (currentLocal === "ru") {
+            domLayout[i][k].firstElementChild.innerHTML = letter.ru;
+          }
+        } else {
+          if (currentLocal === "en") {
+            if (letter.enSymbol.toLowerCase() != letter.en) {
+              domLayout[i][k].firstElementChild.innerHTML = letter.en;
+            } else {
+              domLayout[i][k].firstElementChild.innerHTML = letter.enSymbol;
+            }
+          }
+
+          if (currentLocal === "ru") {
+            if (letter.ruSymbol.toLowerCase() != letter.ru) {
+              domLayout[i][k].firstElementChild.innerHTML = letter.ru;
+            } else {
+              domLayout[i][k].firstElementChild.innerHTML = letter.ruSymbol;
+            }
+          }
+        }
       }
     }
+    localStorage.setItem('currentLocal', currentLocal);
   }
 
-  if (event.keyCode === 16 && event.ctrlKey === true) {
-    switch (currentLocal) {
-      case 'en':
-        currentLocal = 'ru';
-        break;
-      case 'ru':
-        currentLocal = 'en';
-        break;
-      case 'enSymbol':
-        currentLocal = 'ruSymbol';
-        break;
-      case 'ruSymbol':
-        currentLocal = 'enSymbol';
-        break;
-    }
-
-    localStorage.setItem('currentLocal', currentLocal);
-
+  if (event.keyCode === 17 && event.altKey === true) {
+    currentLocal = currentLocal === 'en'? 'ru': 'en';
     for (let i = 0; i < layout.length; i++) {
       for (let k = 0; k < layout[i].length; k++) {
         const letter = layout[i][k];
-        domLayout[i][k].firstElementChild.innerHTML = letter[currentLocal];
+        if (!capsLock) {
+          if (currentLocal === "en") {
+            domLayout[i][k].firstElementChild.innerHTML = letter.en;
+          }
+
+          if (currentLocal === "ru") {
+            domLayout[i][k].firstElementChild.innerHTML = letter.ru;
+          }
+
+        } else {
+
+          if (currentLocal === "en") {
+            if (letter.enSymbol.toLowerCase() != letter.en) {
+              domLayout[i][k].firstElementChild.innerHTML = letter.en;
+            } else {
+              domLayout[i][k].firstElementChild.innerHTML = letter.enSymbol;
+            }
+          }
+
+          if (currentLocal === "ru") {
+            if (letter.ruSymbol.toLowerCase() != letter.ru) {
+              domLayout[i][k].firstElementChild.innerHTML = letter.ru;
+            } else {
+              domLayout[i][k].firstElementChild.innerHTML = letter.ruSymbol;
+            }
+          }
+        }
       }
     }
+    localStorage.setItem('currentLocal', currentLocal);
   }
 
   //CAPS LOCK
   if (event.keyCode === 20) {
-    capsLock = capsLock === false ? true : false;
+    capsLock = !capsLock;
     for (let i = 0; i < layout.length; i++) {
       for (let k = 0; k < layout[i].length; k++) {
         const letter = layout[i][k];
@@ -296,7 +355,5 @@ addEventListener("keyup", (event) => {
       }
     }
   }
-
-
 
 });
