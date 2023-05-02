@@ -123,7 +123,7 @@ keys.forEach(key => {
 
     if (!functionalKeys.includes(key)) {
       let array = textArea.value.split('');
-      array.splice(positionCursor, 0, event.target.innerHTML);
+      array.splice(positionCursor, 0, event.target.innerText);
       array = array.join('');
       textArea.value = array;
       positionCursor++;
@@ -159,8 +159,6 @@ keys.forEach(key => {
                 break;
             }
             domLayout[i][k].innerHTML = letter[localLang];
-
-
           } else {
             if (currentLocal === "en") {
               if (letter.enSymbol.toLowerCase() != letter.en) {
@@ -295,7 +293,7 @@ addEventListener("keydown", (event) => {
 
   if (!functionalKeys.includes(event.keyCode)) {
     let array = textArea.value.split('');
-    array.splice(positionCursor, 0, key.innerHTML);
+    array.splice(positionCursor, 0, key.innerText);
     array = array.join('');
     textArea.value = array;
     positionCursor++;
