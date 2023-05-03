@@ -7,7 +7,7 @@ let capsLock = false;
 
 let positionCursor = 0;
 
-const functionalKeys = [9, 8, 46, 13, 17, 91, 16, 20, 18];
+const functionalKeys = [9, 8, 46, 13, 17, 91, 16, 20, 18, 32];
 
 
 const layout = [
@@ -275,6 +275,15 @@ keys.forEach(key => {
       textArea.setSelectionRange(positionCursor, positionCursor);
     }
 
+    //SPACE
+    if (key === 32) {
+      let array = textArea.value.split('');
+      array.splice(positionCursor, 0, ' ');
+      array = array.join('');
+      textArea.value = array;
+      positionCursor++;
+      textArea.setSelectionRange(positionCursor, positionCursor);
+    }
 
   });
 });
@@ -420,6 +429,16 @@ addEventListener("keydown", (event) => {
   if (event.keyCode === 13) {
     let array = textArea.value.split('');
     array.splice(positionCursor, 0, '\n');
+    array = array.join('');
+    textArea.value = array;
+    positionCursor++;
+    textArea.setSelectionRange(positionCursor, positionCursor);
+  }
+
+   //SPACE
+  if (event.keyCode === 32) {
+    let array = textArea.value.split('');
+    array.splice(positionCursor, 0, ' ');
     array = array.join('');
     textArea.value = array;
     positionCursor++;
