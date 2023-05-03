@@ -9,7 +9,6 @@ let positionCursor = 0;
 
 const functionalKeys = [9, 8, 46, 13, 17, 91, 16, 20, 18, 32];
 
-
 const layout = [
   [createKey(192, '`', '~', 'ё', 'Ё'), createKey(49, 1, '!', 1, '!'), createKey(50, 2, '@', 2, '@'), createKey(51, 3, '#', 3, '#'), createKey(52, 4, '$', 4, '$'), createKey(53, 5, '%', 5, '%'), createKey(54, 6, '^', 6, '^'), createKey(55, 7, '&', 7, '&'), createKey(56, 8, '*', 8, '*'), createKey(57, 9, '(', 9, '('), createKey(48, 0, ')', 0, ')'), createKey(189, '-', '_', '-', '_'), createKey(187, '=', '+', '=', '+'), createKey(8, 'Backspace', 'Backspace', 'Backspace', 'Backspace')],
   [createKey(9, 'Tab', 'Tab', 'Tab', 'Tab'), createKey(81, 'q', 'Q', 'й', 'Й'), createKey(87, 'w', 'W', 'ц', 'Ц'), createKey(69, 'e', 'E', 'у', 'У'), createKey(82, 'r', 'R', 'к', 'К'), createKey(84, 't', 'T', 'е', 'Е'), createKey(89, 'y', 'Y', 'н', 'Н'), createKey(85, 'u', 'U', 'г', 'Г'), createKey(73, 'i', 'I', 'ш', 'Ш'), createKey(79, 'o', 'O', 'щ', 'Щ'), createKey(80, 'p', 'P', 'з', 'З'), createKey(219, '[', '{', 'х', 'Х'), createKey(221, ']', '}', 'ъ', 'Ъ'), createKey(220, '\\', '|', '\\', '/'), createKey(46, 'del', 'del', 'del', 'del')],
@@ -109,7 +108,6 @@ textArea.addEventListener('keydown', (event) => {
   event.preventDefault();
 })
 
-
 textArea.addEventListener('click', (event) => {
   positionCursor = textArea.selectionStart;
 });
@@ -117,7 +115,6 @@ textArea.addEventListener('click', (event) => {
 keys.forEach(key => {
   key.addEventListener('click', (event) => {
     const key = +event.target.id;
-    const textArea = document.getElementsByClassName("textAreaField")[0];
 
     textArea.focus();
 
@@ -291,13 +288,11 @@ keys.forEach(key => {
 addEventListener("keydown", (event) => {
   const key = document.getElementById(event.keyCode);
 
-  if (key) {
-    if (![16, 17, 18, 20].includes(event.keyCode)) {
-      key.classList.add("click");
-    }
+  if (key && ![16, 17, 18, 20].includes(event.keyCode)) {
+    key.classList.add("click");
   }
 
-  switch(event.code){
+  switch (event.code) {
     case "ShiftLeft": domLayout[3][0].classList.add('click'); break;
     case "ShiftRight": domLayout[3][11].classList.add('click'); break;
     case "ControlLeft": domLayout[4][0].classList.add('click'); break;
@@ -305,8 +300,6 @@ addEventListener("keydown", (event) => {
     case "AltLeft": domLayout[4][2].classList.add('click'); break;
     case "AltRight": domLayout[4][4].classList.add('click'); break;
   }
-
-  const textArea = document.getElementsByClassName("textAreaField")[0];
 
   if (!functionalKeys.includes(event.keyCode) && document.getElementById(event.keyCode)) {
     let array = textArea.value.split('');
@@ -376,9 +369,6 @@ addEventListener("keydown", (event) => {
 
   //TAB
   if (event.keyCode === 9) {
-
-    event.returnValue = false;
-
     let array = textArea.value.split('');
     array.splice(event.target.selectionStart, 0, '  ');
     array = array.join('');
@@ -388,26 +378,22 @@ addEventListener("keydown", (event) => {
   }
 
   //BackSpace
-  if (event.keyCode === 8) {
-    if (positionCursor != 0) {
-      let array = textArea.value.split('');
-      array.splice(positionCursor - 1, 1);
-      array = array.join('');
-      textArea.value = array;
-      positionCursor--;
-      textArea.setSelectionRange(positionCursor, positionCursor);
-    }
+  if (event.keyCode === 8 && positionCursor != 0) {
+    let array = textArea.value.split('');
+    array.splice(positionCursor - 1, 1);
+    array = array.join('');
+    textArea.value = array;
+    positionCursor--;
+    textArea.setSelectionRange(positionCursor, positionCursor);
   }
 
   //Delete
-  if (event.keyCode === 46) {
-    if (positionCursor != textArea.value.length) {
-      let array = textArea.value.split('');
-      array.splice(positionCursor, 1);
-      array = array.join('');
-      textArea.value = array;
-      textArea.setSelectionRange(positionCursor, positionCursor);
-    }
+  if (event.keyCode === 46 && positionCursor != textArea.value.length) {
+    let array = textArea.value.split('');
+    array.splice(positionCursor, 1);
+    array = array.join('');
+    textArea.value = array;
+    textArea.setSelectionRange(positionCursor, positionCursor);
   }
 
   //ENTER
@@ -420,7 +406,7 @@ addEventListener("keydown", (event) => {
     textArea.setSelectionRange(positionCursor, positionCursor);
   }
 
-   //SPACE
+  //SPACE
   if (event.keyCode === 32) {
     let array = textArea.value.split('');
     array.splice(positionCursor, 0, ' ');
@@ -435,13 +421,12 @@ addEventListener("keydown", (event) => {
 addEventListener("keyup", (event) => {
   setTimeout(() => {
     const key = document.getElementById(event.keyCode);
-    if (key) {
-      if (![16, 20].includes(event.keyCode)) {
-        key.classList.remove("click");
-      }
+
+    if (key && ![16, 20].includes(event.keyCode)) {
+      key.classList.remove("click");
     }
-    
-    switch(event.code){
+
+    switch (event.code) {
       case "ShiftLeft": domLayout[3][0].classList.remove('click'); break;
       case "ShiftRight": domLayout[3][11].classList.remove('click'); break;
       case "ControlLeft": domLayout[4][0].classList.remove('click'); break;
@@ -449,7 +434,6 @@ addEventListener("keyup", (event) => {
       case "AltLeft": domLayout[4][2].classList.remove('click'); break;
       case "AltRight": domLayout[4][4].classList.remove('click'); break;
     }
-  
   }, 100)
 
   //SHIFT
