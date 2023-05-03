@@ -297,28 +297,13 @@ addEventListener("keydown", (event) => {
     }
   }
 
-  if (event.code == "ShiftLeft") {
-    domLayout[3][0].classList.add('click')
-  }
-
-  if (event.code == "ShiftRight") {
-    domLayout[3][11].classList.add('click')
-  }
-
-  if (event.code == "ControlLeft") {
-    domLayout[4][0].classList.add('click')
-  }
-
-  if (event.code == "ControlRight") {
-    domLayout[4][5].classList.add('click')
-  }
-
-  if (event.code == "AltLeft") {
-    domLayout[4][2].classList.add('click')
-  }
-
-  if (event.code == "AltRight") {
-    domLayout[4][4].classList.add('click')
+  switch(event.code){
+    case "ShiftLeft": domLayout[3][0].classList.add('click'); break;
+    case "ShiftRight": domLayout[3][11].classList.add('click'); break;
+    case "ControlLeft": domLayout[4][0].classList.add('click'); break;
+    case "ControlRight": domLayout[4][5].classList.add('click'); break;
+    case "AltLeft": domLayout[4][2].classList.add('click'); break;
+    case "AltRight": domLayout[4][4].classList.add('click'); break;
   }
 
   const textArea = document.getElementsByClassName("textAreaField")[0];
@@ -450,36 +435,21 @@ addEventListener("keydown", (event) => {
 addEventListener("keyup", (event) => {
   setTimeout(() => {
     const key = document.getElementById(event.keyCode);
-
     if (key) {
       if (![16, 20].includes(event.keyCode)) {
         key.classList.remove("click");
       }
     }
-
-    if (event.code == "ShiftLeft") {
-      domLayout[3][0].classList.remove('click')
+    
+    switch(event.code){
+      case "ShiftLeft": domLayout[3][0].classList.remove('click'); break;
+      case "ShiftRight": domLayout[3][11].classList.remove('click'); break;
+      case "ControlLeft": domLayout[4][0].classList.remove('click'); break;
+      case "ControlRight": domLayout[4][5].classList.remove('click'); break;
+      case "AltLeft": domLayout[4][2].classList.remove('click'); break;
+      case "AltRight": domLayout[4][4].classList.remove('click'); break;
     }
-
-    if (event.code == "ShiftRight") {
-      domLayout[3][11].classList.remove('click')
-    }
-
-    if (event.code == "ControlLeft") {
-      domLayout[4][0].classList.remove('click')
-    }
-
-    if (event.code == "ControlRight") {
-      domLayout[4][5].classList.remove('click')
-    }
-
-    if (event.code == "AltLeft") {
-      domLayout[4][2].classList.remove('click')
-    }
-
-    if (event.code == "AltRight") {
-      domLayout[4][4].classList.remove('click')
-    }
+  
   }, 100)
 
   //SHIFT
