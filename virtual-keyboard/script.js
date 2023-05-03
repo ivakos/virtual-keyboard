@@ -282,13 +282,9 @@ keys.forEach(key => {
 addEventListener("keydown", (event) => {
   const key = document.getElementById(event.keyCode);
 
-  if (event.keyCode != 16) {
-    if (event.keyCode != 17) {
-      if (event.keyCode != 18) {
-        if (event.keyCode != 20) {
-          key.classList.add("click");
-        }
-      }
+  if (key) {
+    if (![16, 17, 18, 20].includes(event.keyCode)) {
+      key.classList.add("click");
     }
   }
 
@@ -318,7 +314,7 @@ addEventListener("keydown", (event) => {
 
   const textArea = document.getElementsByClassName("textAreaField")[0];
 
-  if (!functionalKeys.includes(event.keyCode)) {
+  if (!functionalKeys.includes(event.keyCode) && document.getElementById(event.keyCode)) {
     let array = textArea.value.split('');
     array.splice(positionCursor, 0, key.innerText);
     array = array.join('');
@@ -435,11 +431,13 @@ addEventListener("keydown", (event) => {
 addEventListener("keyup", (event) => {
   setTimeout(() => {
     const key = document.getElementById(event.keyCode);
-    if (event.keyCode != 16) {
-      if(event.keyCode != 20){
+
+    if (key) {
+      if (![16, 20].includes(event.keyCode)) {
         key.classList.remove("click");
       }
     }
+
     if (event.code == "ShiftLeft") {
       domLayout[3][0].classList.remove('click')
     }
