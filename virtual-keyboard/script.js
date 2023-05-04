@@ -132,21 +132,10 @@ keys.forEach((element) => {
 
           if (!capsLock) {
             switch (currentLocal) {
-              case 'en':
-                localLang = 'enSymbol';
-                break;
-
-              case 'enSymbol':
-                localLang = 'en';
-                break;
-
-              case 'ru':
-                localLang = 'ruSymbol';
-                break;
-
-              case 'ruSymbol':
-                localLang = 'ru';
-                break;
+              case 'en': localLang = 'enSymbol'; break;
+              case 'enSymbol': localLang = 'en'; break;
+              case 'ru': localLang = 'ruSymbol'; break;
+              case 'ruSymbol': localLang = 'ru'; break;
               default: break;
             }
             domLayout[i][k].innerHTML = letter[localLang];
@@ -187,25 +176,11 @@ keys.forEach((element) => {
       }
 
       switch (currentLocal) {
-        case 'en':
-          currentLocal = 'enSymbol';
-          break;
-
-        case 'enSymbol':
-          currentLocal = 'en';
-          break;
-
-        case 'ru':
-          currentLocal = 'ruSymbol';
-          break;
-
-        case 'ruSymbol':
-          currentLocal = 'ru';
-          break;
-
-        default:
-
-          break;
+        case 'en': currentLocal = 'enSymbol'; break;
+        case 'enSymbol': currentLocal = 'en'; break;
+        case 'ru': currentLocal = 'ruSymbol'; break;
+        case 'ruSymbol': currentLocal = 'ru'; break;
+        default: break;
       }
     }
 
