@@ -114,8 +114,6 @@ keys.forEach((element) => {
   element.addEventListener('click', (event) => {
     const key = +event.target.id;
 
-    textArea.focus();
-
     if (!functionalKeys.includes(key)) {
       let array = textArea.value.split('');
       array.splice(positionCursor, 0, event.target.innerText);
@@ -283,6 +281,8 @@ keys.forEach((element) => {
       positionCursor += 1;
       textArea.setSelectionRange(positionCursor, positionCursor);
     }
+
+    textArea.focus();
   });
 });
 
